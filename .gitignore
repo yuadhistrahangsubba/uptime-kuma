@@ -1,0 +1,9 @@
+# Internal-only infrastructure map — never publish (contains internal ports/topology)
+monitors-internal.md
+
+# Local backups / exports
+*.tar.gz
+*-backup-*.json
+
+# OS / editor cruft
+.DS_Store

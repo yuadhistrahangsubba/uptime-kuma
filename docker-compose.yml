@@ -1,0 +1,41 @@
+# Uptime Kuma — availability monitoring for the education-bt (EMIS) platform.
+#
+# DEPLOYMENT MODEL: Flow B (see README.md)
+#   - Runs on its OWN host/VM, in a SEPARATE failure domain from the app services,
+#     but on the SAME private network / VPC so it can reach services by private IP/DNS.
+#   - Does NOT join any application Docker network (that would only work same-host and
+#     would re-couple the monitor to the failure domain it is supposed to observe).
+#   - UI is bound to localhost only (internal-only access via SSH tunnel — see README).
+#
+# This is an INFRASTRUCTURE unit, not a NestJS microservice. There is no code to build;
+# it runs the upstream Uptime Kuma image as-is.
+
+services:
+  uptime-kuma:
+    image: louislam/uptime-kuma:1 # major-version tag — receives patch/minor updates within v1
+    container_name: uptime-kuma
+    restart: always
+    volumes:
+      # ALL config + monitor definitions + history live here. Back this up (see README).
+      - uptime-kuma-data:/app/data
+    ports:
+      # Internal-only: bind to loopback so the UI is NOT publicly exposed.
+      # Reach it with:  ssh -L 3001:localhost:3001 <monitoring-host>   then open http://localhost:3001
+      # To expose on the private network instead, change to "3001:3001" and firewall accordingly.
+      - "127.0.0.1:3001:3001"
+    healthcheck:
+      # Bundled healthcheck script in the image — lets Docker restart Kuma if it wedges.
+      test: ["CMD-SHELL", "extra/healthcheck"]
+      interval: 60s
+      timeout: 30s
+      retries: 3
+      start_period: 30s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  uptime-kuma-data:
+    name: uptime-kuma-data

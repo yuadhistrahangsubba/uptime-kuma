@@ -1,4 +1,4 @@
-# education-bt Monitoring — Uptime Kuma
+# Monitoring — Uptime Kuma
 
 Availability / blackbox monitoring for the EMIS platform. Watches every service's HTTP
 `/health` endpoint and TCP microservice port, plus shared infrastructure (NATS, Redis,
@@ -42,7 +42,7 @@ network; it's simpler but loses the outage-survival property. Prod = Flow B.
 ## Quick start
 
 ```bash
-cd monitoring
+cd uptime-kuma
 docker compose up -d
 docker compose ps          # confirm healthy
 ```

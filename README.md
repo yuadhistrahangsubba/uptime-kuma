@@ -121,9 +121,13 @@ to each NestJS service, which none have today).
 
 ## Upgrading
 
+The image is pinned to `louislam/uptime-kuma:2.4.0` (current stable, v2 line). To upgrade,
+bump the tag in `docker-compose.yml` deliberately, then:
+
 ```bash
 docker compose pull
 docker compose up -d
 ```
 
-The `:1` tag stays on the v1 major line. Review release notes before jumping majors.
+Review the release notes before changing versions — v2 uses a different on-disk data
+format than v1, so pin an explicit version and back up the volume before major bumps.
